@@ -1,20 +1,21 @@
 package com.examgen.example.examgen.entity;
 
 import jakarta.persistence.*;
+import com.examgen.example.examgen.enums.NivelDificuldade;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import com.examgen.example.examgen.enums.nivelDificuldade;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "prova")
-@Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Provas {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
     @ManyToOne
@@ -27,6 +28,7 @@ public class Provas {
     @Column(name = "descricao")
     private String descricao;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "dificuldade")
-    private nivelDificuldade dificuldade;
+    private NivelDificuldade dificuldade;
 }

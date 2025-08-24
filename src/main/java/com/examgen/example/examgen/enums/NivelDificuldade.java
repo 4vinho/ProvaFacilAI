@@ -1,9 +1,11 @@
 package com.examgen.example.examgen.enums;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
-public enum nivelDificuldade {
+@Getter
+public enum NivelDificuldade {
 
     MUITO_FACIL(1, "Muito Fácil"),
     FACIL(2, "Fácil"),
