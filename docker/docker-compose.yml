@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ollama
+      - postgres
+    environment:
+      - ollama.api.base-url=http://ollama:11434
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama_data:/root/.ollama
+    container_name: ollama
+
+  setup_ollama:
+    image: curlimages/curl:8.7.1
+    volumes:
+      - ./setup_ollama.sh:/setup_ollama.sh
+    command: "sh /setup_ollama.sh"
+    depends_on:
+      - ollama
+
+  postgres:
+    build:
+      context: .
+      dockerfile: postgre.dockerfile
+    image: postgres-ai:v1
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+
+networks:
+  default:
+    driver: bridge
