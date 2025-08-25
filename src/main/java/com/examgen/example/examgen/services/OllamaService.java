@@ -16,23 +16,20 @@ import java.util.Map;
 public class OllamaService {
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
-    private final String model;
 
     public OllamaService(
             WebClient.Builder webClientBuilder,
             ObjectMapper objectMapper,
-            @Value("${ollama.api.base-url}") String url,
-            @Value("${ollama.api.model}") String model
+            @Value("${ollama.api.base-url}") String url
     ) {
         this.webClient = webClientBuilder.baseUrl(url).build();
         this.objectMapper = objectMapper;
-        this.model = model;
     }
 
-    public String request(String prompt) {
+    public String request(String prompt, String modelName) {
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", model);
+        requestBody.put("model", modelName);
         requestBody.put("prompt", prompt);
         requestBody.put("stream", false);
 

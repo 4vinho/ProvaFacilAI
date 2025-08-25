@@ -1,13 +1,20 @@
 package com.examgen.example.examgen.services;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
 public class SummarizationService {
 
-    private final String url;
     private final OllamaService ollamaService;
+    private final String summarizationModel;
 
-    public SummarizationService(String url, OllamaService ollamaService) {
-        this.url = url;
+    public SummarizationService(
+            OllamaService ollamaService,
+            @Value("${ollama.api.model-chat}") String summarizationModel
+    ) {
         this.ollamaService = ollamaService;
+        this.summarizationModel = summarizationModel;
     }
 
     public String summarize(String text) {
@@ -20,6 +27,6 @@ public class SummarizationService {
 
         Text:
         """ + text;
-        return ollamaService.request(prompt);
+        return ollamaService.request(prompt, summarizationModel);
     }
 }
