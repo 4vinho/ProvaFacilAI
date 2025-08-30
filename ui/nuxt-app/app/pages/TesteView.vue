@@ -1,11 +1,11 @@
 <script setup lang="ts">
-
+definePageMeta({
+  layout: 'auth'
+})
 </script>
 
 <template>
-  <div class="text-orange-500">
-    TESTE
-  </div>
+    <span>TESTE asdas</span>
 </template>
 
 <style scoped>

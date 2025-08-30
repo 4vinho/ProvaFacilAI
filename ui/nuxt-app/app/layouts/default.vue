@@ -1,12 +1,10 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'main'
-})
+
 </script>
 
 <template>
-  <div>
-    Não é aqui
+  <div class="min-h-screen">
+    <slot />
   </div>
 </template>
 
