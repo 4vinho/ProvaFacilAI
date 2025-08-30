@@ -36,10 +36,10 @@ public class MaterialService {
     
     @Transactional
     public MaterialResponse uploadMaterial(MaterialUploadRequest request) {
-        logger.info("Starting material upload: {}", request.getTitle());
+        logger.info("Starting material upload: {}", request.getTitulo());
         
         // Create and save initial material
-        Material material = new Material(request.getTitle(), request.getContent(), request.getDescription());
+        Material material = new Material(request.getTitulo(), request.getConteudo(), request.getDescricao());
         material.setStatus(Material.MaterialStatus.PROCESSING);
         material = materialRepository.save(material);
         

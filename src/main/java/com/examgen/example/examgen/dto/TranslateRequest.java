@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TranslateRequest {
-    private String text;
-    private String targetLanguage = "English";
+    private String texto;
+    private String idiomaOrigem; // auto-detecção se não informado
+    private String idiomaDestino = "Inglês";
 }
