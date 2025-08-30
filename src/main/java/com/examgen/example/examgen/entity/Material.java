@@ -2,7 +2,11 @@ package com.examgen.example.examgen.entity;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "materials")
 public class Material {
@@ -37,62 +41,10 @@ public class Material {
         PROCESSING, COMPLETED, ERROR
     }
     
-    // Constructors
-    public Material() {}
-    
     public Material(String title, String originalContent, String description) {
         this.title = title;
         this.originalContent = originalContent;
         this.description = description;
-    }
-    
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    public String getTitle() {
-        return title;
-    }
-    
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    
-    public String getOriginalContent() {
-        return originalContent;
-    }
-    
-    public void setOriginalContent(String originalContent) {
-        this.originalContent = originalContent;
-    }
-    
-    public String getTranslatedContent() {
-        return translatedContent;
-    }
-    
-    public void setTranslatedContent(String translatedContent) {
-        this.translatedContent = translatedContent;
-    }
-    
-    public String getDescription() {
-        return description;
-    }
-    
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
-    public String getEmbedding() {
-        return embedding;
-    }
-    
-    public void setEmbedding(String embedding) {
-        this.embedding = embedding;
     }
     
     public void setEmbedding(float[] embeddingArray) {
@@ -125,21 +77,5 @@ public class Material {
         } catch (Exception e) {
             return new float[0];
         }
-    }
-    
-    public String getOriginalLanguage() {
-        return originalLanguage;
-    }
-    
-    public void setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage = originalLanguage;
-    }
-    
-    public MaterialStatus getStatus() {
-        return status;
-    }
-    
-    public void setStatus(MaterialStatus status) {
-        this.status = status;
     }
 }
