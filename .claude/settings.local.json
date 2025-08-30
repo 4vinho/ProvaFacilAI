@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker:*)",
+      "Bash(.mvnw.cmd clean compile)",
+      "Bash(mvn clean:*)",
+      "Bash(mvn:*)",
+      "Bash(./mvnw clean:*)",
+      "Bash(./mvnw:*)",
+      "Bash(curl:*)",
+      "Bash(.mvnw.cmd spring-boot:run)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

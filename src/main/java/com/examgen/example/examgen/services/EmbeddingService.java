@@ -1,5 +1,6 @@
 package com.examgen.example.examgen.services;
 
+import com.examgen.example.examgen.dto.EmbeddingRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,14 +12,8 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.model.Embedding;
-import org.springframework.ai.embedding.EmbeddingRequest;
-import org.springframework.ai.embedding.EmbeddingResponse;
-
-
 @Service
-public class EmbeddingService implements EmbeddingModel {
+public class EmbeddingService {
 
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
@@ -30,38 +25,17 @@ public class EmbeddingService implements EmbeddingModel {
             @Value("${ollama.api.base-url}") String url,
             @Value("${ollama.api.model-embed}") String model
     ) {
-        this.webClient = webClientBuilder.baseUrl(url).build();
+        // Fix base URL for embeddings endpoint
+        String baseUrl = url.replace("/api/generate", "");
+        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
         this.objectMapper = objectMapper;
         this.model = model;
     }
 
-    // Implement the embed method from EmbeddingModel interface
-    @Override
-    public EmbeddingResponse call(EmbeddingRequest embeddingRequest) {
-        List<List<Double>> embeddings = embeddingRequest.getInstructions().stream()
-                .map(this::generateEmbeddingInternal) // Use an internal helper method
-                .collect(Collectors.toList());
 
-        List<Embedding> springAIEbeddings = embeddings.stream()
-                .map(e -> new Embedding(e, null)) // Assuming metadata is not needed for now
-                .collect(Collectors.toList());
-
-        return new EmbeddingResponse(springAIEbeddings);
-    }
-
-    // Helper method to generate single embedding and convert float[] to List<Double>
-    private List<Double> generateEmbeddingInternal(String text) {
-        float[] floatArray = generateEmbedding(text); // Call existing method
-        return java.util.Arrays.stream(floatArray)
-                .mapToObj(d -> (double) d)
-                .collect(Collectors.toList());
-    }
-
-    public float[] generateEmbedding(String text) {
+    public float[] generateEmbeddingVector(String text) {
         try {
-            Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("model", model);
-            requestBody.put("prompt", text);
+            EmbeddingRequest requestBody = new EmbeddingRequest(model, text);
 
             String responseBody = webClient.post()
                     .uri("/api/embeddings")
@@ -87,5 +61,41 @@ public class EmbeddingService implements EmbeddingModel {
             System.err.println("Error generating embedding: " + e.getMessage());
             throw new RuntimeException("Failed to generate embedding", e);
         }
+    }
+
+    public String generateEmbedding(String text) {
+        try {
+            float[] embedding = generateEmbeddingVector(text);
+            return "Embedding generated successfully with " + embedding.length + " dimensions";
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate embedding", e);
+        }
+    }
+
+    public String calculateSimilarity(String text1, String text2) {
+        try {
+            float[] embedding1 = generateEmbeddingVector(text1);
+            float[] embedding2 = generateEmbeddingVector(text2);
+            
+            double similarity = cosineSimilarity(embedding1, embedding2);
+            
+            return String.format("Cosine similarity: %.4f", similarity);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to calculate similarity", e);
+        }
+    }
+
+    private double cosineSimilarity(float[] vectorA, float[] vectorB) {
+        double dotProduct = 0.0;
+        double normA = 0.0;
+        double normB = 0.0;
+        
+        for (int i = 0; i < vectorA.length; i++) {
+            dotProduct += vectorA[i] * vectorB[i];
+            normA += Math.pow(vectorA[i], 2);
+            normB += Math.pow(vectorB[i], 2);
+        }
+        
+        return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
     }
 }
